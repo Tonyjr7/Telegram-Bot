@@ -39,25 +39,18 @@ def send_categories(message):
 # Command to set user's location
 @bot.message_handler(commands=['location'])
 def set_location(message):
-    bot.reply_to(message, "Please share your live location so we can provide news based on your location.")
+    bot.reply_to(message, "Please enter your location (e.g., city name, country) so we can provide news based on your location.")
+
+# Handle text messages containing location
+@bot.message_handler(func=lambda message: True)
+def handle_text_location(message):
+    location = message.text
+    bot.reply_to(message, f"Your location: {location}. We'll provide news based on this location.")
 
 # Handle unknown commands
 @bot.message_handler(func=lambda message: True)
 def handle_unknown(message):
     bot.reply_to(message, "Sorry, I don't understand that command.")
-
-# Handle location messages
-@bot.message_handler(content_types=['location'])
-def handle_location(message):
-    latitude = message.location.latitude
-    longitude = message.location.longitude
-    top_headlines = newsapi.get_top_headlines(language='en', latitude=latitude, longitude=longitude)
-    articles = top_headlines['articles']
-    for article in articles:
-        title = article['title']
-        description = article['description']
-        url = article['url']
-        bot.send_message(message.chat.id, f"*{title}*\n{description}\n[Read more]({url})", parse_mode="Markdown")
 
 # Polling for updates
 bot.polling()
