@@ -1,2 +1,3 @@
 pyTelegramBotAPI
 telebot
+newsapi-python
